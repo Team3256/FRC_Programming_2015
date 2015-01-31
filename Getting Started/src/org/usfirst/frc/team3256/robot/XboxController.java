@@ -3,12 +3,18 @@ package org.usfirst.frc.team3256.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 /**
- *
+ * Wrapper class for Xbox Controller
+ * 
  * @author VCS Robotics
  */
 public class XboxController {
+    
+    //make a stick
     private Joystick stick;
     
+    /**
+     * Creates and XboxController object
+     */ 
     public XboxController(int port) {
         stick = new Joystick(port);
     }

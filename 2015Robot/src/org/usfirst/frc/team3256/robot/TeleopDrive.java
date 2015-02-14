@@ -1,19 +1,25 @@
 package org.usfirst.frc.team3256.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+
 /**
  * TeleopDrive
  * 
  * @author VcRobotics 
  */
-public class TeleopDrive extends DriveTrain{
+public class TeleopDrive {
 	
 	/**
-	 * Coonstructs a TeleopDrive object
+	 * Constructs a TeleopDrive object
 	 */ 
-	public TeleopDrive(int lf, int lr, int rf, int rr, int shifter1,
-			int shifter2) {
-		super(lf, lr, rf, rr, shifter1, shifter2);
-		// TODO Auto-generated constructor stub
+	private DriveTrain drive;
+	private DoubleSolenoid shifter;
+	public TeleopDrive(DriveTrain drive) {
+		//super(lf, lr, rf, rr, shifter1, shifter2);
+		// TODO Auto-generated constructor stub]
+		this.drive = drive;
+		shifter = drive.getShifter();
+		
 	}
 	
 	/**
@@ -31,14 +37,26 @@ public class TeleopDrive extends DriveTrain{
 			return 0.0;
 		}
 	}
+	/**
+	 * Shifts the robot
+	 * 
+	 * @param state (true engaged)
+	 */ 
+	public void setShifterState(boolean state){
 	
+		if(state){
+			shifter.set(DoubleSolenoid.Value.kForward);
+		}else{
+			shifter.set(DoubleSolenoid.Value.kReverse);
+		}
+	}
 	/**
 	 * arcadeDrive.
 	 * 
 	 * @param throttle, turn
 	 */ 
 	public void arcadeDrive(double throttle, double turn) {
-		throttle = -throttle;
+		//throttle = -throttle;
 		if(turn<0.05 && turn>-0.05){
 			turn =0.0;
 		}else if(throttle<0.05 && throttle>-0.05){
@@ -51,8 +69,8 @@ public class TeleopDrive extends DriveTrain{
 		skimmedLeftSpeed = leftSpeed + skim(leftSpeed);
 		skimmedRightSpeed = rightSpeed + skim(rightSpeed);
 		
-		super.setLeftSpeed(skimmedLeftSpeed);
-		super.setRightSpeed(-skimmedRightSpeed);
+		drive.setLeftSpeed(skimmedLeftSpeed);
+		drive.setRightSpeed(skimmedRightSpeed);
 	}
 	
 	/**
@@ -61,8 +79,8 @@ public class TeleopDrive extends DriveTrain{
 	 * @param leftY, rightY
 	 */
 	public void tankDrive(double leftY, double rightY ){
-		super.setLeftSpeed(leftY);
-		super.setRightSpeed(rightY);
+		drive.setLeftSpeed(leftY);
+		drive.setRightSpeed(rightY);
 	}
 	
 }

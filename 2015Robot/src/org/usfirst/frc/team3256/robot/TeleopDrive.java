@@ -28,7 +28,7 @@ public class TeleopDrive {
 	 * @param speed
 	 */ 
 	private double skim(double speed){
-		double gain = 0.5;
+		double gain = 0.3;
 		if (speed > 1.0) {
 		    return -((speed - 1.0) * gain);
 		}else if (speed < -1.0) {
@@ -57,9 +57,10 @@ public class TeleopDrive {
 	 */ 
 	public void arcadeDrive(double throttle, double turn) {
 		//throttle = -throttle;
-		if(turn<0.05 && turn>-0.05){
+		if(turn<0.1 && turn>-0.1){
 			turn =0.0;
-		}else if(throttle<0.05 && throttle>-0.05){
+		}
+		if(throttle<0.1 && throttle>-0.1){
 			throttle=0.0;
 		}
 		double leftSpeed, rightSpeed, skimmedLeftSpeed, skimmedRightSpeed;
@@ -69,6 +70,9 @@ public class TeleopDrive {
 		skimmedLeftSpeed = leftSpeed + skim(leftSpeed);
 		skimmedRightSpeed = rightSpeed + skim(rightSpeed);
 		
+		//if (getButtonA)
+		//System.out.println("left speeed: "+skimmedLeftSpeed);
+		//System.out.println("right speeed: "+skimmedRightSpeed);
 		drive.setLeftSpeed(skimmedLeftSpeed);
 		drive.setRightSpeed(skimmedRightSpeed);
 	}

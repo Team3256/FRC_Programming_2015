@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3256.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Gyro;
 
 /**
  * Autonomous Drive
@@ -10,34 +11,48 @@ import edu.wpi.first.wpilibj.Encoder;
 public class AutoDrive {
 	
 	//conversion units
-	private double feetPerTick = 64.0/ 1045.0 / 14.0;
+	private double leftFeetSlope = -497;
+	private double leftFeetB = 93;
+	public double rightFeetSlope = -326;
+	public double rightFeetB = 28;
     private double anglePerTick = 1.68 / 90.0;
     	
     	//encoders
     private Encoder rEnc, lEnc;
     private DriveTrain drive ;
+    private Gyro gyro;
+    private PID pidController;
 	/**
 	 * Constructs an AutoDrive object
 	 * 
 	 * @param lf motor port, lr motor port, rf motor port, rr motor port, shifter1 port, shifter2 port, rEnc1 port, rEnc2 port, 
 	 * 	lEnc1 port, lEnc2 port
 	 */
-	public AutoDrive(DriveTrain drive) {
+	public AutoDrive(DriveTrain drive, Gyro gyro) {
 		//super(lf, lr, rf, rr, shifter1, shifter2);
 		// TODO Auto-generated constructor stub
 		this.drive = drive;
+		this.gyro = gyro;
+		//gyro.reset();
+		this.gyro.initGyro();
+    	this.gyro.reset();
+    	this.gyro.setSensitivity(0.007);
 		rEnc= drive.getRightEncoder();
 		lEnc=drive.getLeftEncoder();
+		pidController = new PID(0.0, 0.0, 0.0, 0.0, 0.0);
 	}
 	
-	public int getRightEnc(){
+	public double getRightTicks(double feet){ //returning the number of ticks in the distance passed in with the slope intercept equation
 		
-		return rEnc.get();
+		double x= rightFeetSlope*feet; 
+		return x+= rightFeetB;
 	}
 	
-	public int getLeftEnc(){
-	
-		return lEnc.get();
+	public double getLeftTicks(double feet){ //returning the number of ticks in the distance passed in with the slope intercept equation
+		
+		double x= leftFeetSlope*feet;
+		return x+= leftFeetB;
+		
 	}
 	/**
 	 * Drives a set distance at a set speed
@@ -45,13 +60,15 @@ public class AutoDrive {
 	 * @param feet, speed
 	 * 
 	 */
-	public void setFeet(double feet, double speed){
-		if (feet < lEnc.getDistance()-.05 && feet < rEnc.getDistance()-.05) {
-			drive.setLeftSpeed(-speed);
-			drive.setRightSpeed(-speed);
-        } else if (feet > rEnc.getDistance()+.05 && feet > lEnc.getDistance()+.05) {
-        	drive.setLeftSpeed(speed);
-        	drive.setRightSpeed(speed);
+	public void setFeet(double feet, double leftSpeed, double rightSpeed, double angle){ //go a certain distance
+		double leftTicks = getLeftTicks(feet);
+		double rightTicks = getRightTicks(feet);
+		if (leftTicks < lEnc.get() && rightTicks < rEnc.get()) { 
+			drive.setLeftSpeed(-leftSpeed);
+			drive.setRightSpeed(-rightSpeed);
+        } else if (leftTicks > lEnc.get() && rightTicks > rEnc.get()) {
+        	drive.setLeftSpeed(leftSpeed);
+        	drive.setRightSpeed(rightSpeed);
         } else{
             drive.setLeftSpeed(0);
             drive.setRightSpeed(0);
@@ -64,17 +81,47 @@ public class AutoDrive {
 	 * @param angle, speed
 	 */
 	public void setTurnAngle(double angle, double speed){
-		if (angle * anglePerTick< lEnc.getDistance()-.05 && angle * anglePerTick< rEnc.getDistance()-.05) {
-            //arcadeDrive(0, -0.8);
-            drive.setLeftSpeed(-speed);
-            drive.setRightSpeed(speed);
-        } else if (angle * anglePerTick> lEnc.getDistance()-.05 && angle * anglePerTick> rEnc.getDistance()-.05) {
-        	drive.setLeftSpeed(speed);
-            drive.setRightSpeed(-speed);
-        } else{
-        	drive.setLeftSpeed(0);
-            drive.setRightSpeed(0);
-        }
-            //arcadeDrive(0,0);
+		angle -= 33;
+		System.out.println(gyro.getAngle());
+		if(angle >0 && gyro.getAngle()<angle){
+			drive.setLeftSpeed(-speed);
+			drive.setRightSpeed(speed);
+			System.out.println("Esta bien");
+		}else if (angle<0 && gyro.getAngle() > angle){
+			drive.setLeftSpeed(speed);
+			drive.setRightSpeed(-speed);
+			System.out.println("Hola");
+		}else{
+			drive.setLeftSpeed(0.0);
+			drive.setRightSpeed(0.0);
+			//gyro.reset();
+		}
+	            //arcadeDrive(0,0);
+	}
+	
+	public boolean setFeetPID(double setpoint){
+		double leftTicksSetpoint = getLeftTicks(setpoint);
+		double leftOutput = pidController.calc(leftTicksSetpoint, lEnc.get());
+		double rightTicksSetpoint = getRightTicks(setpoint);
+		double rightOutput = pidController.calc(rightTicksSetpoint, rEnc.get());
+		if(rightOutput > 1.0){
+			rightOutput = 1.0;
+		}else if(rightOutput <0.0){
+			rightOutput = 0.0;
+		}
+		
+		if(leftOutput>1.0){
+			leftOutput = 1.0;
+		}else if(leftOutput<0.0){
+			leftOutput =0.0;
+		}
+		
+		if(leftOutput !=0 && rightOutput !=0){
+			drive.setLeftSpeed(leftOutput);
+			drive.setRightSpeed(rightOutput);
+			return false;
+		}else{
+			return true;
+		}
 	}
 }

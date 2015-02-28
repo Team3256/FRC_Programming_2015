@@ -11,7 +11,7 @@ public class Constants {
 	public static final int LEFT_ENCODER_PORT_2 = 1;
 	public static final int RIGHT_ENCODER_PORT_1 = 2;
 	public static final int RIGHT_ENCODER_PORT_2 = 3;
-	
+	//arm ports
 	//shifter ports
 	public static final int LEFT_SHIFTER_PORT = 5;
 	public static final int RIGHT_SHIFTER_PORT = 6;

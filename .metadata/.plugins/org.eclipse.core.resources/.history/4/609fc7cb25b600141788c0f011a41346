@@ -1,0 +1,110 @@
+package org.usfirst.frc.team3256.robot;
+
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Gyro;
+
+/**
+ * Autonomous Drive
+ * 
+ * @author VCRobotics (Newman)
+ */
+public class AutoDrive {
+	
+	//conversion units
+	private double leftFeetSlope = -497;
+	private double leftFeetB = 93;
+	public double rightFeetSlope = -326;
+	public double rightFeetB = 28;
+    private double anglePerTick = 1.68 / 90.0;
+    	
+    	//encoders
+    private Encoder rEnc, lEnc;
+    private DriveTrain drive ;
+    private Gyro gyro;
+	/**
+	 * Constructs an AutoDrive object
+	 * 
+	 * @param lf motor port, lr motor port, rf motor port, rr motor port, shifter1 port, shifter2 port, rEnc1 port, rEnc2 port, 
+	 * 	lEnc1 port, lEnc2 port
+	 */
+	public AutoDrive(DriveTrain drive, Gyro gyro) {
+		//super(lf, lr, rf, rr, shifter1, shifter2);
+		// TODO Auto-generated constructor stub
+		this.drive = drive;
+		this.gyro = gyro;
+		gyro.reset();
+		rEnc= drive.getRightEncoder();
+		lEnc=drive.getLeftEncoder();
+	}
+	
+	public double getRightTicks(double feet){
+		
+		double x= rightFeetSlope*feet;
+		return x+= rightFeetB;
+	}
+	
+	public double getLeftTicks(double feet){
+		
+		double x= leftFeetSlope*feet;
+		return x+= leftFeetB;
+		
+	}
+	/**
+	 * Drives a set distance at a set speed
+	 * 
+	 * @param feet, speed
+	 * 
+	 */
+	public void setFeet(double feet, double leftSpeed, double rightSpeed, double angle){
+		//double leftSpeed = speed;
+		//double rightSpeed = speed;
+		/*if(angle<-5.0){
+			rightSpeed+=0.1;
+		}else if (angle>5.0){
+			leftSpeed += 0.1;
+		}else{
+			leftSpeed = speed;
+			rightSpeed = speed;
+		}*/
+		double leftTicks = getLeftTicks(feet);
+		double rightTicks = getRightTicks(feet);
+		if (leftTicks < lEnc.get() && rightTicks < rEnc.get()) {
+			drive.setLeftSpeed(-leftSpeed);
+			drive.setRightSpeed(-rightSpeed);
+        } else if (leftTicks > lEnc.get() && rightTicks > rEnc.get()) {
+        	drive.setLeftSpeed(leftSpeed);
+        	drive.setRightSpeed(rightSpeed);
+        } else{
+            drive.setLeftSpeed(0);
+            drive.setRightSpeed(0);
+        }
+	}
+	
+	/**
+	 * Turn a set angle at a set speed
+	 * 
+	 * @param angle, speed
+	 */
+	public void setTurnAngle(double angle, double speed){
+		/*if (angle * anglePerTick< lEnc.getDistance()-.05 && angle * anglePerTick< rEnc.getDistance()-.05) {
+            //arcadeDrive(0, -0.8);
+            drive.setLeftSpeed(-speed);
+            drive.setRightSpeed(speed);
+        } else if (angle * anglePerTick> lEnc.getDistance()-.05 && angle * anglePerTick> rEnc.getDistance()-.05) {
+        	drive.setLeftSpeed(speed);
+            drive.setRightSpeed(-speed);
+        } else{
+        	drive.setLeftSpeed(0);
+            drive.setRightSpeed(0);
+        }*/
+	
+		if(gyro.getAngle()<angle && angle >0){
+			drive.setLeftSpeed(speed);
+			drive.setRightSpeed(-speed);
+		}else if (gyro.getAngle() > angle && angle<0){
+			drive.setLeftSpeed(-speed);
+			drive.setRightSpeed(speed);
+		}
+	            //arcadeDrive(0,0);
+	}
+}

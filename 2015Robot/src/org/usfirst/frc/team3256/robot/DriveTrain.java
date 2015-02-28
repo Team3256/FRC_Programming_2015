@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Gyro;
 public class DriveTrain {
 	
 	//set stuff
-	private Talon leftFront, leftRear;
+	private Victor leftFront, leftRear;
 	private Victor rightFront, rightRear;
 	private DoubleSolenoid shifter;
 	private Encoder rEnc, lEnc;
@@ -23,13 +23,15 @@ public class DriveTrain {
 	 */ 
 	public DriveTrain(int lf, int lr, int rf, int rr,int rEncP1,
 			int rEncP2, int lEncP1, int lEncP2, int shifter1, int shifter2) {
-		leftFront = new Talon(lf);
-		leftRear = new Talon(lr);
+		leftFront = new Victor(lf);
+		leftRear = new Victor(lr);
 		rightFront = new Victor(rf);
 		rightRear = new Victor(rr);
 		shifter = new DoubleSolenoid(shifter1, shifter2);
 		rEnc = new Encoder(rEncP1, rEncP2);
 		lEnc = new Encoder(lEncP1, lEncP2);
+		rEnc.reset();
+		lEnc.reset();
 
 	}
 	//public DriveTrain(){}

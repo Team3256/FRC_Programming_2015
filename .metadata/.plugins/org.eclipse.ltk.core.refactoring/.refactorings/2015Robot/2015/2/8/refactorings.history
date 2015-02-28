@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;&apos; to &apos;org.usfirst.frc.team3256.robot.Robot.gyro&apos;&#x0D;&#x0A;- Original project: &apos;2015Robot&apos;&#x0D;&#x0A;- Destination element: &apos;org.usfirst.frc.team3256.robot.Robot.gyro&apos;&#x0D;&#x0A;- Original element: &apos;org.usfirst.frc.team3256.robot.Robot.compressor&apos;" description="Copy field" destination="/src&lt;org.usfirst.frc.team3256.robot{Robot.java[Robot^gyro" element1="/src&lt;org.usfirst.frc.team3256.robot{Robot.java[Robot^compressor" flags="589830" id="org.eclipse.jdt.ui.copy" members="1" policy="org.eclipse.jdt.ui.copyMembers" stamp="1424113261258" version="1.0"/>
+</session>

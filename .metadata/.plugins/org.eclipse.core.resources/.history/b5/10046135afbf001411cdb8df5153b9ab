@@ -1,0 +1,8 @@
+package org.usfirst.frc.team3256.robot;
+
+public class Elevator {
+	public Victor winch;
+	public Elevator(int winchMotor, int winchEncoder){
+		this.winch = new Victor(winchMotor);
+	}
+}

@@ -12,6 +12,18 @@ public class Constants {
 	public static final int RIGHT_ENCODER_PORT_1 = 2;
 	public static final int RIGHT_ENCODER_PORT_2 = 3;
 	//arm ports
+	public static final int INTAKE_ARM_1 = 4;
+	public static final int INTAKE_ARM_2 = 6;
+	public static final int CHICKEN_INTAKE_ARM_1A = 4;
+	public static final int CHICKEN_INTAKE_ARM_1B = 4;
+	public static final int CHICKEN_INTAKE_ARM_2A = 6;
+	public static final int CHICKEN_INTAKE_ARM_2B = 6;
+	
+	//elevator ports 
+	public static final int ELEVATOR_MOTOR_PORT = 9;
+	
+	//inside intake ports
+	public static final int INSIDE_INTAKE = 8;
 	//shifter ports
 	public static final int LEFT_SHIFTER_PORT = 5;
 	public static final int RIGHT_SHIFTER_PORT = 6;

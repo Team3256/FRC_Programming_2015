@@ -26,7 +26,9 @@ public class Robot extends IterativeRobot {
 	XboxController driver;
 	Compressor compressor;
 	Gyro gyro;
-	Talon arm1L, arm1R, pulley;
+	//Talon arm1L, arm1R, pulley;
+	IntakeArm intake;
+	Elevator elevator;
 	//SensorBase gyroChannel;
 	//Encoder testEnc;
 	//DriverStationLCD log;
@@ -44,12 +46,13 @@ public class Robot extends IterativeRobot {
     			Constants.LEFT_ENCODER_PORT_2, Constants.LEFT_SHIFTER_PORT, 
     			Constants.RIGHT_SHIFTER_PORT);
     	robotDrive= new TeleopDrive(drive);
-    	arm1L = new Talon(4);
-    	arm1R = new Talon(6);
-    	pulley = new Talon(8);
     	driver= new XboxController(0);
     	compressor = new Compressor(0);
     	gyro = new Gyro(0);
+    	elevator =  new Elevator(Constants.ELEVATOR_MOTOR_PORT, 4);
+    	intake = new IntakeArm(Constants.INTAKE_ARM_1, Constants.INTAKE_ARM_2, Constants.INSIDE_INTAKE, 
+    			Constants.CHICKEN_INTAKE_ARM_1A, Constants.CHICKEN_INTAKE_ARM_1B,
+    			Constants.CHICKEN_INTAKE_ARM_2A, Constants.CHICKEN_INTAKE_ARM_2B );
     	System.out.println("Hi");
     	//compressor.s
     	robotAutoDrive = new AutoDrive(drive, gyro);
@@ -96,7 +99,7 @@ public class Robot extends IterativeRobot {
     	gyro.reset();
     	drive.getLeftEncoder().reset();
     	drive.getRightEncoder().reset();
-    	pulley.set(0.0);
+    	//pulley.set(0.0);
     	//System.out.println("Right Encoder: "+robotAutoDrive.getRightTicks(5.0));
     	//System.out.println("Left Encoder: "+robotAutoDrive.getLeftTicks(5.0));
     }
@@ -107,27 +110,19 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
     	//robotDrive.setShifterState(driver.getButtonRB());
     	
-        robotDrive.arcadeDrive(driver.getLeftY(), -driver.getRightX());
+        //robotDrive.arcadeDrive(driver.getLeftY(), -driver.getRightX());
         
     	if(driver.getButtonLB()){
-    		arm1L.set(-1.0);
-    		arm1R.set(1.0);
-    		//drive.setLeftSpeed(1.0);
+    		intake.intakeBox(1.0, 0.5);
     	}else if(driver.getButtonRB()){
-    		//drive.setLeftSpeed(-1.0);
-    		//compressor.stop();
-    		arm1L.set(1.0);
-    		arm1R.set(-1.0);
+    		intake.spitOutBox(-1.0, -0.5);
     	}else if(driver.getButtonA()){
-    		arm1L.set(0.0);
-    		arm1R.set(0.0);
+    		intake.holdBoxes();
     	}else if(driver.getButtonB()){
-    		arm1L.set(1.0);
-    		arm1R.set(1.0);
-    	}else if(driver.getButtonX()){
-    		pulley.set(-1.0);
+    		intake.releaseBoxes();
     	}
     	
+    	elevator.moveElevator(driver.getLeftY());
     	
     	/*if(driver.getButtonB()){
     		//compressor.start();

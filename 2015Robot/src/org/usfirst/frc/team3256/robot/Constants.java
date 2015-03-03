@@ -14,10 +14,10 @@ public class Constants {
 	//arm ports
 	public static final int INTAKE_ARM_1 = 4;
 	public static final int INTAKE_ARM_2 = 6;
-	public static final int CHICKEN_INTAKE_ARM_1A = 4;
-	public static final int CHICKEN_INTAKE_ARM_1B = 4;
-	public static final int CHICKEN_INTAKE_ARM_2A = 6;
-	public static final int CHICKEN_INTAKE_ARM_2B = 6;
+	public static final int CHICKEN_INTAKE_ARM_1A = 5;
+	public static final int CHICKEN_INTAKE_ARM_1B = 6;
+	//public static final int CHICKEN_INTAKE_ARM_2A = 6;
+	//public static final int CHICKEN_INTAKE_ARM_2B = 6;
 	
 	//elevator ports 
 	public static final int ELEVATOR_MOTOR_PORT = 9;

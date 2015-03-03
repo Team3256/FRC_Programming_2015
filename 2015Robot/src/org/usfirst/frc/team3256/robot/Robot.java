@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 
 /**
  * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
+ * functions corresponding to each mode, as described in the It`	erativeRobot
  * documentation. If you change the name of this class or the package after
  * creating this project, you must also update the manifest file in the resource
  * directory.
@@ -51,12 +51,11 @@ public class Robot extends IterativeRobot {
     	gyro = new Gyro(0);
     	elevator =  new Elevator(Constants.ELEVATOR_MOTOR_PORT, 4);
     	intake = new IntakeArm(Constants.INTAKE_ARM_1, Constants.INTAKE_ARM_2, Constants.INSIDE_INTAKE, 
-    			Constants.CHICKEN_INTAKE_ARM_1A, Constants.CHICKEN_INTAKE_ARM_1B,
-    			Constants.CHICKEN_INTAKE_ARM_2A, Constants.CHICKEN_INTAKE_ARM_2B );
+    			Constants.CHICKEN_INTAKE_ARM_1A,Constants.CHICKEN_INTAKE_ARM_1B);
     	System.out.println("Hi");
-    	//compressor.s
+    	compressor.setClosedLoopControl(true);
     	robotAutoDrive = new AutoDrive(drive, gyro);
-    	//gyroChannel = new SensorBase();
+    	//gyroChannel = new SensorBase(); 
     	//System.out.println("hi");
     	//pot = new AnalogPotentiometer(0);
     	//testEnc = new Encoder(0,1);
@@ -113,7 +112,9 @@ public class Robot extends IterativeRobot {
         //robotDrive.arcadeDrive(driver.getLeftY(), -driver.getRightX());
         
     	if(driver.getButtonLB()){
-    		intake.intakeBox(1.0, 0.5);
+    		intake.intakeBox(1.0, 0.25);
+    	}else if(driver.getButtonY()){
+    		intake.intakeBox(0.0, 0.0);
     	}else if(driver.getButtonRB()){
     		intake.spitOutBox(-1.0, -0.5);
     	}else if(driver.getButtonA()){

@@ -1,0 +1,43 @@
+package org.usfirst.frc.team3256.robot;
+
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Victor;
+
+public class IntakeArm {
+
+	private Victor intake1;
+	private Victor intake2;
+	private Victor interiorIntake;
+	private DoubleSolenoid ChickenIntake1;
+	//private DoubleSolenoid ChickenIntake2;
+	
+	public IntakeArm(int intake1, int intake2, int interiorIntake, int ChickenIntake1A)
+		{
+		this.intake1 = new Victor(intake1);
+		this.intake2 = new Victor(intake2);
+		this.interiorIntake = new Victor(interiorIntake);
+		this.ChickenIntake1 = new DoubleSolenoid(ChickenIntake1A, ChickenIntake1B);
+		//this.ChickenIntake2 = new DoubleSolenoid(ChickenIntake2A, ChickenIntake2B);
+	}
+	
+	public void intakeBox(double speed, double insideSpeed){
+		ChickenIntake1.set(DoubleSolenoid.Value.kForward);
+		intake1.set(-speed);
+		intake2.set(speed);
+		interiorIntake.set(insideSpeed);
+	}
+	public void holdBoxes(){
+		ChickenIntake1.set(DoubleSolenoid.Value.kForward);
+	//	ChickenIntake2.set(DoubleSolenoid.Value.kForward);
+	}
+	public void releaseBoxes(){
+		ChickenIntake1.set(DoubleSolenoid.Value.kReverse);
+	//	ChickenIntake2.set(DoubleSolenoid.Value.kReverse);
+	}
+	public void spitOutBox(double speed, double insideSpeed){
+		intake1.set(-speed);
+		intake2.set(speed);
+		interiorIntake.set(insideSpeed);
+	}
+}

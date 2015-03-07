@@ -1,0 +1,17 @@
+package org.usfirst.frc.team3256.robot;
+
+import edu.wpi.first.wpilibj.Victor;
+
+public class Elevator {
+	public Victor winch;
+	public Elevator(int winchMotor, int winchEncoder){
+		this.winch = new Victor(winchMotor);
+	}
+	
+	public void moveElevator(double speed){
+		if(speed<0.2 && speed >-0.2){
+			speed =0.0;
+		}
+		winch.set(speed*10);
+	}
+}

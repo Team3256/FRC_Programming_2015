@@ -9,7 +9,7 @@ public class Elevator {
 	}
 	
 	public void moveElevator(double speed){
-		if(speed<0.2 && speed >0.2){
+		if(speed<0.2 && speed >-0.2){
 			speed =0.0;
 		}
 		winch.set(speed);

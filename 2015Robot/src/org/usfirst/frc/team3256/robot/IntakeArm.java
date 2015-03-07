@@ -1,5 +1,6 @@
 package org.usfirst.frc.team3256.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Victor;
@@ -10,19 +11,29 @@ public class IntakeArm {
 	private Victor intake2;
 	private Victor interiorIntake;
 	private DoubleSolenoid ChickenIntake1;
+	private DigitalInput BumperIntakeSwitch;
+	private DigitalInput LimitSwitchIntakeL;
+	private DigitalInput LimitSwitchIntakeR; 
 	//private DoubleSolenoid ChickenIntake2;
 	
-	public IntakeArm(int intake1, int intake2, int interiorIntake, int ChickenIntake1A, int ChickenIntake1B)
-		{
+	public IntakeArm(int intake1, int intake2, int interiorIntake, int ChickenIntake1A, int ChickenIntake1B, int BumperIntake, 
+			int LimitSwitchL, int LimitSwitchR){
 		this.intake1 = new Victor(intake1);
 		this.intake2 = new Victor(intake2);
 		this.interiorIntake = new Victor(interiorIntake);
 		this.ChickenIntake1 = new DoubleSolenoid(ChickenIntake1A, ChickenIntake1B);
-		//this.ChickenIntake2 = new DoubleSolenoid(ChickenIntake2A, ChickenIntake2B);
+		this.BumperIntakeSwitch = new DigitalInput(BumperIntake);
+		this.LimitSwitchIntakeL = new DigitalInput(LimitSwitchL);
+		this.LimitSwitchIntakeR = new DigitalInput(LimitSwitchR);
 	}
-	
+	public void testSensors(){
+		System.out.println(LimitSwitchIntakeL.get());
+		System.out.println(LimitSwitchIntakeR.get());
+		System.out.println(BumperIntakeSwitch.get());
+	}
 	public void intakeBox(double speed, double insideSpeed){
 		ChickenIntake1.set(DoubleSolenoid.Value.kForward);
+		
 		intake1.set(-speed);
 		intake2.set(speed);
 		interiorIntake.set(insideSpeed);

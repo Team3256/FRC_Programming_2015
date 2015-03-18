@@ -1,0 +1,138 @@
+package org.usfirst.frc.team3256.robot;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Victor;
+
+public class IntakeArm {
+
+	private Victor intake1;
+	private Victor intake2;
+	private Victor interiorIntake1;
+	private Victor interiorIntake2;
+	private DoubleSolenoid ChickenIntake1;
+	private DigitalInput BumperIntakeSwitchL;
+	private DigitalInput BumperIntakeSwitchR;
+	private DigitalInput LimitSwitchIntakeL;
+	private DigitalInput LimitSwitchIntakeR; 
+	//private DoubleSolenoid ChickenIntake2;
+
+	public IntakeArm(int intake1, int intake2, int interiorIntake1, int interiorIntake2, int ChickenIntake1A, int ChickenIntake1B, 
+			int BumperIntakeL,int BumperIntakeR, int LimitSwitchL, int LimitSwitchR){
+		this.intake1 = new Victor(intake1);
+		this.intake2 = new Victor(intake2);
+		this.interiorIntake1 = new Victor(interiorIntake1);
+		this.interiorIntake2 = new Victor(interiorIntake2);
+		this.ChickenIntake1 = new DoubleSolenoid(ChickenIntake1A, ChickenIntake1B);
+		this.BumperIntakeSwitchL = new DigitalInput(BumperIntakeL);
+		this.BumperIntakeSwitchR = new DigitalInput(BumperIntakeR);
+		this.LimitSwitchIntakeL = new DigitalInput(LimitSwitchL);
+		this.LimitSwitchIntakeR = new DigitalInput(LimitSwitchR);
+	}
+	public void testSensors(){
+		System.out.println(LimitSwitchIntakeL.get());
+		System.out.println(LimitSwitchIntakeR.get());
+		System.out.println(BumperIntakeSwitchL.get());
+		System.out.println(BumperIntakeSwitchR.get());
+	}
+
+	public boolean bothLimitPressed(){
+		boolean isPressed=!LimitSwitchIntakeL.get()&&!LimitSwitchIntakeR.get();
+		//System.out.println(isPressed);
+		return isPressed;
+	}
+	public void intakeSpitOutBox(boolean intake, boolean spitout, boolean stackin, boolean stackout,double speed, double insideSpeed){
+		//ChickenIntake1.set(DoubleSolenoid.Value.kForward);
+		if(intake&&!spitout){
+			intake1.set(0.0);
+			intake2.set(0.0);
+			if(!LimitSwitchIntakeR.get()){
+				interiorIntake1.set(-insideSpeed/2);
+				interiorIntake2.set(insideSpeed/2);
+			}else if(!LimitSwitchIntakeL.get()){
+				interiorIntake1.set(0.0);
+				interiorIntake2.set(0.0);
+			}else{
+				interiorIntake1.set(-insideSpeed);
+				interiorIntake2.set(insideSpeed);
+			}
+		}else if(!stackin&& stackout){
+			//holdBoxes();
+			if(LimitSwitchIntakeL.get()){
+				interiorIntake1.set(0.0);
+				interiorIntake2.set(0.0);
+				intake1.set(0.0);
+				intake2.set(0.0);
+			}else{
+				interiorIntake1.set(-insideSpeed);
+				interiorIntake2.set(insideSpeed);
+				intake1.set(-speed);
+				intake2.set(speed);
+			}
+		}else if(stackin&&!stackout){
+			
+		}else{
+			intake1.set(0.0);
+			intake2.set(0.0);
+			interiorIntake1.set(0.0);
+			interiorIntake2.set(0.0);
+		}
+		//interiorIntake.set(insideSpeed);
+	}
+	
+	public void intakeInteriorBox(double speed, double insideSpeed){
+		interiorIntake1.set(insideSpeed);
+		interiorIntake2.set(insideSpeed);
+	}
+	public void holdBoxes(){
+		ChickenIntake1.set(DoubleSolenoid.Value.kForward);
+		//	ChickenIntake2.set(DoubleSolenoid.Value.kForward);
+	}
+	public void releaseBoxes(){
+		ChickenIntake1.set(DoubleSolenoid.Value.kReverse);
+		//	ChickenIntake2.set(DoubleSolenoid.Value.kReverse);
+	}
+
+	/*public static void LBRB(IntakeArm intake, XboxController operator){
+
+		if(operator.getButtonLB() && !operator.getButtonRB()){
+			intake.intakeInteriorBox(1.0, 0.25);
+		}
+		else if(operator.getButtonRB() && !operator.getButtonLB()){
+			intake.intakeInteriorBox(-1.0, -0.25);
+		}
+		else if(operator.getButtonRB() && operator.getButtonLB()){
+			intake.intakeInteriorBox(0.0,0.0);
+			System.out.println("inner stopped");
+		}
+		else if(operator.getButtonY()){
+			intake.intakeInteriorBox(0,0);
+		}
+
+	}
+
+	public static void trigger(IntakeArm intake, XboxController operator){
+
+		if(operator.getLeftTrigger() && !operator.getRightTrigger()){
+			intake.intakeBox(1.0, 0.25);
+		}
+
+		else if(operator.getRightTrigger() && !operator.getLeftTrigger()){
+			intake.intakeBox(-1.0, -0.5);
+		}
+
+		else if(operator.getLeftTrigger() && operator.getRightTrigger()){ //got rid of button b
+			intake.intakeBox(0.0, 0.0);
+			System.out.println("outer stopped");
+
+		}
+		
+		else if(operator.getButtonX()){
+			intake.intakeInteriorBox(0,0);
+		}
+
+	}*/
+
+
+}

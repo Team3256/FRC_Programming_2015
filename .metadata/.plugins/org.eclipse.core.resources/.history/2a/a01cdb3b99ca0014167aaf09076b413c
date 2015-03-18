@@ -1,0 +1,79 @@
+package org.usfirst.frc.team3256.robot;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Victor;
+
+public class IntakeTotes {
+
+	private Victor intake1;
+	private Victor intake2;
+	private Victor interiorIntake;
+	private DoubleSolenoid ChickenIntake1;
+	private DigitalInput BumperIntakeSwitch;
+	private DigitalInput LimitSwitchIntakeFront;
+	private DigitalInput LimitSwitchIntakeBack; 
+	 
+	//private DoubleSolenoid ChickenIntake2;
+	
+	public IntakeTotes(int intake1, int intake2, int interiorIntake, int ChickenIntake1A, int ChickenIntake1B, int BumperIntake, 
+			int LimitSwitchL, int LimitSwitchR){
+		this.intake1 = new Victor(intake1);
+		this.intake2 = new Victor(intake2);
+		this.interiorIntake = new Victor(interiorIntake);
+		this.ChickenIntake1 = new DoubleSolenoid(ChickenIntake1A, ChickenIntake1B);
+		this.BumperIntakeSwitch = new DigitalInput(BumperIntake);
+		this.LimitSwitchIntakeFront = new DigitalInput(LimitSwitchL);
+		this.LimitSwitchIntakeBack = new DigitalInput(LimitSwitchR);
+	}
+	public void testSensors(){
+		System.out.println(LimitSwitchIntakeFront.get());
+		System.out.println(LimitSwitchIntakeBack.get());
+		System.out.println(BumperIntakeSwitch.get());
+	}
+	public void intakeBox(double speed, double insideSpeed){
+		ChickenIntake1.set(DoubleSolenoid.Value.kForward);
+		
+		intake1.set(-speed);
+		intake2.set(speed);
+		interiorIntake.set(insideSpeed);
+	}
+	public void holdBoxes(){
+		ChickenIntake1.set(DoubleSolenoid.Value.kForward);
+	//	ChickenIntake2.set(DoubleSolenoid.Value.kForward);
+	}
+	public void releaseBoxes(){
+		ChickenIntake1.set(DoubleSolenoid.Value.kReverse);
+	//	ChickenIntake2.set(DoubleSolenoid.Value.kReverse);
+	}
+	public void spitOutBox(double speed, double insideSpeed) {
+		intake1.set(-speed);
+		intake2.set(speed);
+		interiorIntake.set(insideSpeed);
+	}
+	
+	public void humanIntake (double IntakeSpeed) {
+		interiorIntake.set(IntakeSpeed); 		// moves boxes in 
+			//if (LimitSwitchIntakeFront.get() && LimitSwitchIntakeBack.get()) { 		// if both limit switches are pressed
+				//	interiorIntake.set(0); 		// stops motors
+		//}
+	}
+	
+	public void bumpersIntake(double IntakeSpeed){ 		// change speed var to chicken motors !!!!!!
+		intake1.set(IntakeSpeed); 		//set speed of motor
+		intake2.set(IntakeSpeed); 		//set speed of motor
+		//if(!BumperIntakeSwitch.get()){ 		//getting boolean value if pressed or not
+			//intake1.set(0); 		//set speed of motor
+			//intake2.set(0);		//set speed to 0
+		//}
+	}
+	
+	public void robotIntake (double IntakeSpeed) { 		// inverse of human intake, opposite motor values of human intake.
+		interiorIntake.set(-IntakeSpeed); 		// moves boxes in 
+		//if (LimitSwitchIntakeFront.get() == true && LimitSwitchIntakeBack.get() == true) { // if both buttons are pressed
+				//interiorIntake.set(0); 		// stops motors
+		//}
+	}	
+	
+}

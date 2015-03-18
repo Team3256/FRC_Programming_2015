@@ -11,6 +11,7 @@ public class XboxController {
     
     //make a stick
     private Joystick stick;
+    private Joystick.RumbleType rumble;
     
     /**
      * Creates and XboxController object
@@ -18,7 +19,9 @@ public class XboxController {
     public XboxController(int port) {
         stick = new Joystick(port);
     }
-    
+    public Joystick getJoystick(){
+    	return stick;
+    }
     public boolean getButtonA() {
         return stick.getRawButton(1);
     }
@@ -69,6 +72,9 @@ public class XboxController {
         return stick.getZ() > .5;
     }
     public boolean getRightTrigger() {
-        return stick.getZ() < -.5;
+        return stick.getRawAxis(3) > .5;
+    }
+    public Joystick.RumbleType rumbleJoystick(){
+    	return rumble.kLeftRumble;
     }
 }

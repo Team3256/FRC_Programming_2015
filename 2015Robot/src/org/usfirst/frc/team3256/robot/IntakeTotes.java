@@ -11,7 +11,8 @@ public class IntakeTotes {
 	private Victor intake2;
 	private Victor interiorIntake;
 	private DoubleSolenoid ChickenIntake1;
-	private DigitalInput BumperIntakeSwitch;
+	private DigitalInput BumperISLeft;
+	private DigitalInput BumperISRight;
 	private DigitalInput LimitSwitchIntakeFront;
 	private DigitalInput LimitSwitchIntakeBack; 
 	 
@@ -23,14 +24,16 @@ public class IntakeTotes {
 		this.intake2 = new Victor(intake2);
 		this.interiorIntake = new Victor(interiorIntake);
 		this.ChickenIntake1 = new DoubleSolenoid(ChickenIntake1A, ChickenIntake1B);
-		this.BumperIntakeSwitch = new DigitalInput(BumperIntake);
+		this.BumperISLeft = new DigitalInput(BumperIntake);
+		this.BumperISRight = new DigitalInput(BumperIntake);
 		this.LimitSwitchIntakeFront = new DigitalInput(LimitSwitchL);
 		this.LimitSwitchIntakeBack = new DigitalInput(LimitSwitchR);
 	}
 	public void testSensors(){
 		System.out.println(LimitSwitchIntakeFront.get());
 		System.out.println(LimitSwitchIntakeBack.get());
-		System.out.println(BumperIntakeSwitch.get());
+		System.out.println(BumperISLeft.get());
+		System.out.println(BumperISRight.get());
 	}
 	public void intakeBox(double speed, double insideSpeed){
 		ChickenIntake1.set(DoubleSolenoid.Value.kForward);
@@ -53,28 +56,27 @@ public class IntakeTotes {
 		interiorIntake.set(insideSpeed);
 	}
 	
-	public void humanInTake (double IntakeSpeed) {
-		interiorIntake.set(IntakeSpeed); 		// moves boxes in 
-			if (LimitSwitchIntakeFront.get() == true && LimitSwitchIntakeBack.get() == true) { 		// if both buttons are pressed
+	public void humanIntake (double intakeSpeed) {
+		interiorIntake.set(intakeSpeed); 		// moves boxes in 
+			if (LimitSwitchIntakeFront.get() && LimitSwitchIntakeBack.get()) { 		// if both limit switches are pressed
 					interiorIntake.set(0); 		// stops motors
 		}
 	}
 	
-	public void bumpersIntake(double IntakeSpeed){ 		// change speed var to chicken motors !!!!!!
-		intake1.set(IntakeSpeed); 		//set speed of motor
-		intake2.set(IntakeSpeed); 		//set speed of motor
-		if(!BumperIntakeSwitch.get()){ 		//getting boolean value if pressed or not
+	public void bumpersIntake(double intakeSpeed){ 		// change speed var to chicken motors !!!!!!
+		intake1.set(intakeSpeed); 		//set speed of motor
+		intake2.set(intakeSpeed); 		//set speed of motor
+		if(BumperISLeft.get() && BumperISRight.get()){ 		//getting boolean value if pressed or not
 			intake1.set(0); 		//set speed of motor
 			intake2.set(0);		//set speed to 0
 		}
 	}
 	
-	public void robotIntake (double IntakeSpeed) { 		// inverse of human intake, opposite motor values of human intake.
-		interiorIntake.set(-IntakeSpeed); 		// moves boxes in 
+	public void robotIntake (double intakeSpeed) { 		// inverse of human intake, opposite motor values of human intake.
+		interiorIntake.set(-intakeSpeed); 		// moves boxes in 
 		if (LimitSwitchIntakeFront.get() == true && LimitSwitchIntakeBack.get() == true) { // if both buttons are pressed
-				interiorIntake.set(0); 		// stops motors
+				//interiorIntake.set(0); 		// stops motors
 		}
-	}
-	
+	}	
 	
 }

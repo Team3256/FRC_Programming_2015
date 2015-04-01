@@ -23,7 +23,7 @@ public class PID {
         double D = kD * (prevError - error);
         double PID = P + I + D;
         prevError = error;
-        
+        //System.out.println(PID);
         return PID;
     }
     public void resetError() {

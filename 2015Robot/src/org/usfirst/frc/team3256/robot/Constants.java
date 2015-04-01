@@ -20,12 +20,13 @@ public class Constants {
 	//arm ports
 	public static final int INTAKE_ARM_1 = 7;
 	public static final int INTAKE_ARM_2 = 6;
-	public static final int CHICKEN_INTAKE_ARM_1A = 2;
+	public static final int CHICKEN_INTAKE_ARM_1A = 5;
 	public static final int CHICKEN_INTAKE_ARM_1B = 3;
 	
 	//digital input ports
-	public static final int BUMPER_SWITCH_INTAKE_L = 6;
-	public static final int BUMPER_SWITCH_INTAKE_R = 7;
+	public static final int ELEVATOR_LIMIT = 7;
+	//public static final int BUMPER_SWITCH_INTAKE_L = 6;
+	//public static final int BUMPER_SWITCH_INTAKE_R = 7;
 	public static final int LIMIT_SWITCH_INTAKE_L = 5;
 	public static final int LIMIT_SWITCH_INTAKE_R = 4;
 	
@@ -38,6 +39,6 @@ public class Constants {
 	public static final int INSIDE_INTAKE_1 = 5;
 	public static final int INSIDE_INTAKE_2 = 8;
 	//shifter ports
-	public static final int LEFT_SHIFTER_PORT = 5;
-	public static final int RIGHT_SHIFTER_PORT = 6;
+	public static final int LEFT_SHIFTER_PORT = 0;
+	public static final int RIGHT_SHIFTER_PORT = 1;
 }

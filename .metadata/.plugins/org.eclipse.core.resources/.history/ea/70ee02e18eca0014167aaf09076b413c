@@ -1,0 +1,40 @@
+package org.usfirst.frc.team3256.robot;
+
+import edu.wpi.first.wpilibj.Victor;
+
+public class Elevator {
+	//private slope = 
+	//private distance = 
+	
+	public Victor winch;
+	public Victor winch2;
+	public Elevator(int winchMotor, int winchMotor2, int elevatorEncoder1, int elevatorEncoder2){
+		this.winch = new Victor(winchMotor);
+		this.winch2 = new Victor(winchMotor2);
+	}
+	
+	public void moveElevator(double speed){
+		if(speed<0.2 && speed >-0.2){
+			speed =0.0;
+		}
+		winch.set(speed);
+		winch2.set(speed);
+	}
+	/*
+	public void moveElevatorEncoders(double speed){
+		if(winch.get()<distance){
+			winch.set(speed);
+			winch2.set(speed);
+		}else{
+			winch.set(0);
+			winch2.set(0);
+		}
+		
+		
+	}
+	*/
+	
+	
+	
+	
+}

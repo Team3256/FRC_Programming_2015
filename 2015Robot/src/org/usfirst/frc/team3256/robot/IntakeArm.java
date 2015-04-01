@@ -12,29 +12,29 @@ public class IntakeArm {
 	private Victor interiorIntake1;
 	private Victor interiorIntake2;
 	private DoubleSolenoid ChickenIntake1;
-	private DigitalInput BumperIntakeSwitchL;
-	private DigitalInput BumperIntakeSwitchR;
+	//private DigitalInput BumperIntakeSwitchL;
+	//private DigitalInput BumperIntakeSwitchR;
 	private DigitalInput LimitSwitchIntakeL;
 	private DigitalInput LimitSwitchIntakeR; 
 	//private DoubleSolenoid ChickenIntake2;
 
 	public IntakeArm(int intake1, int intake2, int interiorIntake1, int interiorIntake2, int ChickenIntake1A, int ChickenIntake1B, 
-			int BumperIntakeL,int BumperIntakeR, int LimitSwitchL, int LimitSwitchR){
+			int LimitSwitchL, int LimitSwitchR){
 		this.intake1 = new Victor(intake1);
 		this.intake2 = new Victor(intake2);
 		this.interiorIntake1 = new Victor(interiorIntake1);
 		this.interiorIntake2 = new Victor(interiorIntake2);
 		this.ChickenIntake1 = new DoubleSolenoid(ChickenIntake1A, ChickenIntake1B);
-		this.BumperIntakeSwitchL = new DigitalInput(BumperIntakeL);
-		this.BumperIntakeSwitchR = new DigitalInput(BumperIntakeR);
+		//this.BumperIntakeSwitchL = new DigitalInput(BumperIntakeL);
+		//this.BumperIntakeSwitchR = new DigitalInput(BumperIntakeR);
 		this.LimitSwitchIntakeL = new DigitalInput(LimitSwitchL);
 		this.LimitSwitchIntakeR = new DigitalInput(LimitSwitchR);
 	}
 	public void testSensors(){
 		System.out.println(LimitSwitchIntakeL.get());
 		System.out.println(LimitSwitchIntakeR.get());
-		System.out.println(BumperIntakeSwitchL.get());
-		System.out.println(BumperIntakeSwitchR.get());
+		//System.out.println(BumperIntakeSwitchL.get());
+		//System.out.println(BumperIntakeSwitchR.get());
 	}
 
 	public boolean bothLimitPressed(){
@@ -44,7 +44,7 @@ public class IntakeArm {
 	}
 	public void intakeSpitOutBox(boolean intake, boolean spitout, boolean stackin, boolean stackout,double speed, double insideSpeed){
 		//ChickenIntake1.set(DoubleSolenoid.Value.kForward);
-		if(intake&&!spitout){
+		if(intake&&!spitout&&!stackin&& !stackout){
 			intake1.set(0.0);
 			intake2.set(0.0);
 			if(!LimitSwitchIntakeR.get()){
@@ -57,7 +57,7 @@ public class IntakeArm {
 				interiorIntake1.set(-insideSpeed);
 				interiorIntake2.set(insideSpeed);
 			}
-		}else if(!stackin&& stackout){
+		}else if(!stackin&& stackout&&!intake&&!spitout){
 			//holdBoxes();
 			if(LimitSwitchIntakeL.get()){
 				interiorIntake1.set(0.0);

@@ -8,6 +8,7 @@ public class Elevator {
 	//private double yint = 
 	private int slope = 995;
 	private int yInt=-26;
+	private int lC = 0;
 	public Victor winch;
 	public Victor winch2;
 	public Encoder elevatorEncoder;
@@ -21,13 +22,22 @@ public class Elevator {
 		return this.elevatorEncoder;
 	}
 	
-	public void moveElevator(double speed){
+	public void moveElevator(double speed, boolean isPressed, int loopCounter){
+		
 		if(speed<0.2 && speed >-0.2){
 			speed =0.0;
 		}
 		System.out.println(elevatorEncoder.get());
-		winch.set(speed);
-		winch2.set(-speed);
+		if(isPressed){
+			winch.set(speed);
+			winch2.set(-speed);
+		}else{
+			if(speed < 0.0){
+				speed = Math.abs(speed);
+			}
+			winch.set(-speed);
+			winch2.set(speed);
+		}
 	}
 	public double getTicks(double feet){
 		double y= slope*feet;
@@ -65,7 +75,7 @@ public class Elevator {
 		}else{
 			winch.set(0.0);
 			winch2.set(0.0);
-			moveElevator(joySpeed);
+			//moveElevator(joySpeed, false);
 			elevatorEncoder.reset();
 			return false;
 		}

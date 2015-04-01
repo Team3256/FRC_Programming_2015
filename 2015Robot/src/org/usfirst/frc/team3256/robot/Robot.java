@@ -1,6 +1,8 @@
 package org.usfirst.frc.team3256.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -8,6 +10,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.vision.USBCamera;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -27,6 +30,7 @@ public class Robot extends IterativeRobot {
 	XboxController operator;
 	Compressor compressor;
 	Gyro gyro;
+	CameraServer camera = CameraServer.getInstance();
 	//Talon arm1L, arm1R, pulley;
 	IntakeArm intake;
 	IntakeTotes intakeTotes;
@@ -34,9 +38,11 @@ public class Robot extends IterativeRobot {
 	//SensorBase gyroChannel;
 	//Encoder testEnc;
 	//DriverStationLCD log;
+	int teleopCounter = 0;
 	int autoLoopCounter;
 	int counter;
 	boolean isPressed;
+	private DigitalInput elevatorLimitSwitch;
 	//AnalogPotentiometer pot;
 	
     /**
@@ -54,14 +60,16 @@ public class Robot extends IterativeRobot {
     	operator= new XboxController(1);
     	compressor = new Compressor(0);
     	gyro = new Gyro(0);
+    	camera.setQuality(50);
+		camera.startAutomaticCapture("cam0");
+    	
     	elevator =  new Elevator(Constants.ELEVATOR_MOTOR_PORT, Constants.ELEVATOR_MOTOR_PORT_2, Constants.ELEVATOR_ENCODER_PORT_1, 
     			Constants.ELEVATOR_ENCODER_PORT_2);
     	/*intake = new IntakeArm(Constants.INTAKE_ARM_1, Constants.INTAKE_ARM_2, Constants.INSIDE_INTAKE, 
     			Constants.CHICKEN_INTAKE_ARM_1A,Constants.CHICKEN_INTAKE_ARM_1B, Constants.BUMPER_SWITCH_INTAKE, 
     			Constants.LIMIT_SWITCH_INTAKE_L, Constants.LIMIT_SWITCH_INTAKE_R);*/
     	intake = new IntakeArm(Constants.INTAKE_ARM_1, Constants.INTAKE_ARM_2, Constants.INSIDE_INTAKE_1,Constants.INSIDE_INTAKE_2, 
-    			Constants.CHICKEN_INTAKE_ARM_1A,Constants.CHICKEN_INTAKE_ARM_1B, Constants.BUMPER_SWITCH_INTAKE_L, 
-    			Constants.BUMPER_SWITCH_INTAKE_R, Constants.LIMIT_SWITCH_INTAKE_L, Constants.LIMIT_SWITCH_INTAKE_R);
+    			Constants.CHICKEN_INTAKE_ARM_1A,Constants.CHICKEN_INTAKE_ARM_1B, Constants.LIMIT_SWITCH_INTAKE_L, Constants.LIMIT_SWITCH_INTAKE_R);
     	//intakeTotes = new IntakeTotes(Constants.INTAKE_ARM_1, Constants.INTAKE_ARM_2, Constants.INSIDE_INTAKE, 
     		 //	Constants.CHICKEN_INTAKE_ARM_1A,Constants.CHICKEN_INTAKE_ARM_1B, Constants.BUMPER_SWITCH_INTAKE, 
     			//Constants.LIMIT_SWITCH_INTAKE_L, Constants.LIMIT_SWITCH_INTAKE_R);
@@ -70,6 +78,7 @@ public class Robot extends IterativeRobot {
     	robotAutoDrive = new AutoDrive(drive, gyro);
     	//int counter = 10;
     	isPressed= false;
+    	elevatorLimitSwitch = new DigitalInput(Constants.ELEVATOR_LIMIT);
     	//gyroChannel = new SensorBase(); 
     	//System.out.println("hi");
     	//pot = new AnalogPotentiometer(0);
@@ -85,7 +94,9 @@ public class Robot extends IterativeRobot {
      * This function is run once each time the robot enters autonomous mode
      */
     public void autonomousInit() {
-    	//autoLoopCounter = 0;
+    	autoLoopCounter = 0;
+    	drive.getLeftEncoder().reset();
+    	drive.getRightEncoder().reset();
     	//gyro.reset();
     }
 
@@ -95,12 +106,21 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	/*if(autoLoopCounter < 100) //Check if we've completed 100 loops (approximately 2 seconds)
 		{
-			myRobot.drive(-0.5, 0.0); 	// drive forwards half speed
-			autoLoopCounter++;
-			} else {
-			myRobot.drive(0.0, 0.0); 	// stop robot
-		}*/
-    	//robotAutoDrive.setFeet(3.0, 0.6, 0.635, gyro.getAngle());
+			robotAutoDrive.runDriveMotors(1.0);	// drive forwards half speed
+    		
+    		autoLoopCounter++;
+		} else {
+				robotAutoDrive.setFeet(0.0, 0.0, 0.0, gyro.getAngle());; 	// stop robot
+		}*/    	//autoLoopCounter++;
+    	//System.out.println(autoLoopCounter);
+    	//robotAutoDrive.setFeet(-3.0, 0.6, 0.635, gyro.getAngle());
+    	//System.out.println(robotAutoDrive.getLeftTicks(1.0));
+    	//System.out.println(robotAutoDrive.getRightTicks(1.0));
+    	//if(){}
+    	//System.out.println("right encoder: "+drive.getRightEncoder().get());
+        //System.out.println("left encoder: "+drive.getLeftEncoder().get());
+    	//robotAutoDrive.setFeet(1.0, 0.25, 0.35, gyro.getAngle());
+        robotAutoDrive.resetPID(robotAutoDrive.setFeetPID(7.0));
     	//robotAutoDrive.setTurnAngle(180.0, 0.6);
     	
     	
@@ -111,12 +131,14 @@ public class Robot extends IterativeRobot {
      */
     public void teleopInit(){
     	//gyro.reset();
-    	//drive.getLeftEncoder().reset();
-    	//drive.getRightEncoder().reset();
+    	drive.getLeftEncoder().reset();
+    	drive.getRightEncoder().reset();
     	//pulley.set(0.0);
     	//System.out.println("Right Encoder: "+robotAutoDrive.getRightTicks(5.0));
     	//System.out.println("Left Encoder: "+robotAutoDrive.getLeftTicks(5.0));
+    	
     	elevator.getEncoder().reset();
+    	
     }
 
     /**
@@ -124,24 +146,27 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	//robotDrive.setShifterState(driver.getButtonRB());
+    	teleopCounter++;
+    	robotDrive.setShifterState(driver.getButtonRB());
     	
         robotDrive.arcadeDrive(driver.getLeftY(), -driver.getRightX());
         
         if(operator.getButtonX() ){
-    		intake.releaseBoxes();		//chicken flaps open
+    		intake.releaseBoxes();//chicken flaps open
+    		System.out.println("X is pressed");
     	}else if(operator.getButtonY()){
+    		System.out.println("Y is pressed");
     		intake.holdBoxes();								//chicken flaps closed
     	}
-        if(elevator.setElevatorFeet(operator.getLeftTrigger(), operator.getRightTrigger(), 0.5, operator.getLeftY())){
-        	operator.getJoystick().setRumble(operator.rumbleJoystick(), (float) 0.0);
-        }
-        //System.out.println(operator.getLeftTrigger());
-        //System.out.println(operator.getRightTrigger());
-        //System.out.println(elevator.getEncoder().get()<elevator.getTicks(1.0));
-        //System.out.println(intake.bothLimitPressed());
-    	intake.intakeSpitOutBox(operator.getButtonRB(), operator.getButtonLB(),operator.getButtonA(), operator.getButtonB(), 0.5, 0.5);
-    	//elevator.moveElevator(operator.getLeftY());
-    	//elevator.setElevatorFeet(1.0, 0.5);
+        elevator.moveElevator(operator.getLeftY(), elevatorLimitSwitch.get(), teleopCounter);
+        
+       //System.out.println("right encoder: "+drive.getRightEncoder().get());
+       //System.out.println("left encoder: "+drive.getLeftEncoder().get());
+       intake.intakeSpitOutBox(operator.getButtonRB(), operator.getButtonLB(),operator.getButtonA(), operator.getButtonB(), 0.75, 0.5);
+       //robotAutoDrive.resetPID(robotAutoDrive.setFeetPID(5.5));
+       //System.out.println(robotAutoDrive.setFeetPID(3.0));
+       //robotAutoDrive.setFeet(2.0, 0.0, 0.0, 0.0);
+       //intake.testSensors();
     	
     }
     	
@@ -154,5 +179,10 @@ public class Robot extends IterativeRobot {
     public void testPeriodic() {
     	LiveWindow.run();
     }
+ 
+    	void startAutomaticCapture(USBCamera cam0){
+    	}
+    	
     
-}
+    }
+

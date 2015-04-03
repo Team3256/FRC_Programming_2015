@@ -30,6 +30,7 @@ public class Robot extends IterativeRobot {
 	XboxController operator;
 	Compressor compressor;
 	Gyro gyro;
+	AutoSequence autonomous;
 	CameraServer camera = CameraServer.getInstance();
 	//Talon arm1L, arm1R, pulley;
 	IntakeArm intake;
@@ -60,6 +61,9 @@ public class Robot extends IterativeRobot {
     	operator= new XboxController(1);
     	compressor = new Compressor(0);
     	gyro = new Gyro(0);
+    	autonomous = new AutoSequence();
+    	//gyro.initGyro();
+    	//gyro.setSensitivity();
     	camera.setQuality(50);
 		camera.startAutomaticCapture("cam0");
     	
@@ -97,7 +101,7 @@ public class Robot extends IterativeRobot {
     	autoLoopCounter = 0;
     	drive.getLeftEncoder().reset();
     	drive.getRightEncoder().reset();
-    	//gyro.reset();
+    	gyro.reset();
     }
 
     /**
@@ -120,8 +124,17 @@ public class Robot extends IterativeRobot {
     	//System.out.println("right encoder: "+drive.getRightEncoder().get());
         //System.out.println("left encoder: "+drive.getLeftEncoder().get());
     	//robotAutoDrive.setFeet(1.0, 0.25, 0.35, gyro.getAngle());
-        robotAutoDrive.resetPID(robotAutoDrive.setFeetPID(7.0));
+       /*if(robotAutoDrive.resetPID(robotAutoDrive.setDegreePID(90.0, gyro.getAngle()))){
+    	 robotAutoDrive.resetPID(robotAutoDrive.setFeetPID(7.0));
+       }*/
+    	/*if(robotAutoDrive.resetPID(robotAutoDrive.setFeetPID(12.0, 0))){
+    		System.out.println("hi");
+    		
+    		
+    		robotAutoDrive.resetPID(robotAutoDrive.setFeetPID(2.0, 1));
+    	}*/
     	//robotAutoDrive.setTurnAngle(180.0, 0.6);
+    	autonomous.mainRobotSequence(robotAutoDrive);
     	
     	
     }
@@ -130,7 +143,7 @@ public class Robot extends IterativeRobot {
      * This function is called once each time the robot enters tele-operated mode
      */
     public void teleopInit(){
-    	//gyro.reset();
+    	gyro.reset();
     	drive.getLeftEncoder().reset();
     	drive.getRightEncoder().reset();
     	//pulley.set(0.0);
@@ -160,11 +173,12 @@ public class Robot extends IterativeRobot {
     	}
         elevator.moveElevator(operator.getLeftY(), elevatorLimitSwitch.get(), teleopCounter);
         
-       //System.out.println("right encoder: "+drive.getRightEncoder().get());
-       //System.out.println("left encoder: "+drive.getLeftEncoder().get());
-       intake.intakeSpitOutBox(operator.getButtonRB(), operator.getButtonLB(),operator.getButtonA(), operator.getButtonB(), 0.75, 0.5);
+       System.out.println("right encoder: "+Math.abs(drive.getRightEncoder().get()));
+       System.out.println("left encoder: "+drive.getLeftEncoder().get());
+       intake.intakeSpitOutBox(operator.getButtonRB(), operator.getButtonLB(),operator.getButtonA(), operator.getButtonB(), 0.75, 0.475);
        //robotAutoDrive.resetPID(robotAutoDrive.setFeetPID(5.5));
        //System.out.println(robotAutoDrive.setFeetPID(3.0));
+       System.out.println(gyro.getAngle());
        //robotAutoDrive.setFeet(2.0, 0.0, 0.0, 0.0);
        //intake.testSensors();
     	

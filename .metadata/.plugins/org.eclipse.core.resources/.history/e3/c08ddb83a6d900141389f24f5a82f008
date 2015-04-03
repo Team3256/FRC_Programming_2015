@@ -1,0 +1,22 @@
+package org.usfirst.frc.team3256.robot;
+
+public class AutoSequence {
+	 
+	int stepReached =0;
+	double[] feetArr = {11.0, 5.0};
+	public void mainRobotSequence(AutoDrive drive){
+		boolean firstMove;
+		if(stepReached <2){
+			if(stepReached==0){
+				firstMove = drive.resetPID(drive.setFeetPID(feetArr[0], 0));
+			}else{
+				System.out.println("moving back");
+				firstMove = drive.resetPID(drive.setFeetPID(feetArr[1], 1));
+			}
+			if(firstMove){
+				stepReached++;
+			}
+		}
+		
+	}	
+}

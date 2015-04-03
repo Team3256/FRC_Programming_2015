@@ -21,7 +21,7 @@ public class AutoDrive {
     private Encoder rEnc, lEnc;
     private DriveTrain drive ;
     private Gyro gyro;
-    private PID pidController;
+    private PID pidController, turningPIDController;
 	/**
 	 * Constructs an AutoDrive object
 	 * 
@@ -40,6 +40,7 @@ public class AutoDrive {
 		rEnc= drive.getRightEncoder();
 		lEnc=drive.getLeftEncoder();
 		pidController = new PID(0.155, 0.00025, 0.0, 0.0, 0.0);
+		turningPIDController =new PID(0.3, 0.0, 0.0, 0.0, 0.0);
 	}
 	
 	public double getRightTicks(double feet){ //returning the number of ticks in the distance passed in with the slope intercept equation
@@ -106,28 +107,85 @@ public class AutoDrive {
 	            //arcadeDrive(0,0);
 	}
 	
-	public boolean setFeetPID(double setpoint){
-		double leftTicksSetpoint = getLeftTicks(setpoint);
-		double leftOutput = pidController.calc(leftTicksSetpoint, lEnc.get());
-		double rightTicksSetpoint = getRightTicks(setpoint);
-		double rightOutput = pidController.calc(rightTicksSetpoint, rEnc.get());
-		if(rightOutput > 0.5){
-			rightOutput = 0.5;
-		}else if(rightOutput <0.0){
-			rightOutput = 0.0;
+	public boolean setDegreePID(double setpoint, double current){
+		double output = turningPIDController.calc(setpoint,current);
+		System.out.println("output: "+output);
+		if(setpoint>0.0){
+			if(output>0.45){
+				output = 0.45;
+			}
+			if(output<0.0){
+				output = 0.0;
+			}
+			if(output!=0.0){
+				drive.setRightSpeed(output);
+				drive.setLeftSpeed(-output);
+				return false;
+			}else{
+				drive.setRightSpeed(0.0);
+				drive.setLeftSpeed(0.0);
+				return true;
+			}
+		}else{
+			if(output>0.45){
+				output = 0.45;
+			}
+			if(output<0.0){
+				output = 0.0;
+			}
+			if(output!=0.0){
+				drive.setRightSpeed(-output);
+				drive.setLeftSpeed(output);
+				return false;
+			}else{
+				drive.setRightSpeed(0.0);
+				drive.setLeftSpeed(0.0);
+				return true;
+			}
 		}
-		
-		if(leftOutput>0.45){
-			leftOutput = 0.45;
-		}else if(leftOutput<0.0){
-			leftOutput =0.0;
+	}
+	
+	public boolean setFeetPID(double setpoint, int forBack){
+		double leftTicksSetpoint = getLeftTicks(Math.abs(setpoint));
+		double leftOutput = 0.0;
+		double rightTicksSetpoint = getRightTicks(Math.abs(setpoint));
+		double rightOutput = 0.0;
+		if(forBack == 0){
+			rightOutput = pidController.calc(rightTicksSetpoint, Math.abs(rEnc.get()));
+			leftOutput = pidController.calc(leftTicksSetpoint, lEnc.get());
+			if(rightOutput > 0.5){
+				rightOutput = 0.5;
+			}else if(rightOutput <0.0){
+				rightOutput = 0.0;
+			}
+			if(leftOutput>0.45){
+				leftOutput = 0.45;
+			}else if(leftOutput<0.0){
+				leftOutput =0.0;
+			}
+			rightOutput = -rightOutput;
+			leftOutput = -leftOutput;
+		}else{
+			rightOutput = pidController.calc(rightTicksSetpoint, rEnc.get());
+			leftOutput = pidController.calc(leftTicksSetpoint, Math.abs(lEnc.get()));
+			if(rightOutput > 0.5){
+				rightOutput = 0.5;
+			}else if(rightOutput <0.0){
+				rightOutput = 0.0;
+			}
+			if(leftOutput>0.45){
+				leftOutput = 0.45;
+			}else if(leftOutput<0.0){
+				leftOutput =0.0;
+			}
 		}
-		
+		System.out.println(rightOutput);
+		System.out.println(leftOutput);
 		if(leftOutput !=0 && rightOutput !=0){
 			//System.out.println(leftOutput);
 			//System.out.println(rightOutput);
-			drive.setLeftSpeed(-leftOutput);
-			drive.setRightSpeed(-rightOutput);
+			drive.setLeftSpeed(leftOutput);
+			drive.setRightSpeed(rightOutput);
 			return false;
 		}else{
 			//System.out.println(leftOutput);
@@ -137,9 +195,12 @@ public class AutoDrive {
 			return true;
 		}
 	}
-	public void resetPID(boolean isReached){
+	public boolean resetPID(boolean isReached){
 		if(isReached){
 			pidController.resetError();
+			rEnc.reset();
+			lEnc.reset();
 		}
+		return isReached;
 	}
 }

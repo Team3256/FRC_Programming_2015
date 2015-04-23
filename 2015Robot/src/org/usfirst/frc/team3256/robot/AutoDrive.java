@@ -168,13 +168,13 @@ public class AutoDrive {
 		}else{
 			rightOutput = pidController.calc(rightTicksSetpoint, rEnc.get());
 			leftOutput = pidController.calc(leftTicksSetpoint, Math.abs(lEnc.get()));
-			if(rightOutput > 0.5){
-				rightOutput = 0.5;
+			if(rightOutput > 0.3){
+				rightOutput = 0.3;
 			}else if(rightOutput <0.0){
 				rightOutput = 0.0;
 			}
-			if(leftOutput>0.45){
-				leftOutput = 0.45;
+			if(leftOutput>0.25){
+				leftOutput = 0.25;
 			}else if(leftOutput<0.0){
 				leftOutput =0.0;
 			}

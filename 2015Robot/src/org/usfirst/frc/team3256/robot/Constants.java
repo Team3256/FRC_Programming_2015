@@ -22,7 +22,10 @@ public class Constants {
 	public static final int INTAKE_ARM_2 = 6;
 	public static final int CHICKEN_INTAKE_ARM_1A = 5;
 	public static final int CHICKEN_INTAKE_ARM_1B = 3;
-	
+	public static final int BRAKE_1 = 0;
+	public static final int BRAKE_2 = 0;
+	public static final int LEFT_SERVO_STOPPER=0;
+	public static final int RIGHT_SERVO_STOPPER=0;
 	//digital input ports
 	public static final int ELEVATOR_LIMIT = 7;
 	//public static final int BUMPER_SWITCH_INTAKE_L = 6;

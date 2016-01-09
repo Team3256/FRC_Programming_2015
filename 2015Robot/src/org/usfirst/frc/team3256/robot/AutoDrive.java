@@ -15,13 +15,13 @@ public class AutoDrive {
 	private double leftFeetB = -145;
 	public double rightFeetSlope = 990;
 	public double rightFeetB = 289;
-    private double anglePerTick = 1.68 / 90.0;
+    	private double anglePerTick = 1.68 / 90.0;
     	
     	//encoders
-    private Encoder rEnc, lEnc;
-    private DriveTrain drive ;
-    private Gyro gyro;
-    private PID pidController, turningPIDController;
+    	private Encoder rEnc, lEnc;
+    	private DriveTrain drive ;
+    	private Gyro gyro;
+    	private PID pidController, turningPIDController;
 	/**
 	 * Constructs an AutoDrive object
 	 * 
@@ -29,14 +29,11 @@ public class AutoDrive {
 	 * 	lEnc1 port, lEnc2 port
 	 */
 	public AutoDrive(DriveTrain drive, Gyro gyro) {
-		//super(lf, lr, rf, rr, shifter1, shifter2);
-		// TODO Auto-generated constructor stub
 		this.drive = drive;
 		this.gyro = gyro;
-		//gyro.reset();
 		this.gyro.initGyro();
-    	this.gyro.reset();
-    	this.gyro.setSensitivity(0.007);
+    		this.gyro.reset();
+    		this.gyro.setSensitivity(0.007);
 		rEnc= drive.getRightEncoder();
 		lEnc=drive.getLeftEncoder();
 		pidController = new PID(0.155, 0.00025, 0.0, 0.0, 0.0);
@@ -72,15 +69,15 @@ public class AutoDrive {
 			drive.setLeftSpeed(leftSpeed);
 			drive.setRightSpeed(rightSpeed);
 			System.out.println("False");
-        } else if (leftTicks > lEnc.get() && rightTicks > rEnc.get()) {
-        	drive.setLeftSpeed(-leftSpeed);
-        	drive.setRightSpeed(-rightSpeed);
-        	System.out.println("False");
-        } else{
-            /*drive.setLeftSpeed(0);
-            drive.setRightSpeed(0);*/
-            System.out.println("True");
-        }
+        	} else if (leftTicks > lEnc.get() && rightTicks > rEnc.get()) {
+        		drive.setLeftSpeed(-leftSpeed);
+	        	drive.setRightSpeed(-rightSpeed);
+	        	System.out.println("False");
+	        } else{
+	            drive.setLeftSpeed(0);
+	            drive.setRightSpeed(0);
+	            System.out.println("True");
+	        }
 	}
 	
 	/**
